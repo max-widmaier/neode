@@ -51,3 +51,4 @@ function RelateTo(neode, from, to, relationship, properties) {
     });
   });
 }
+//# sourceMappingURL=RelateTo.js.map

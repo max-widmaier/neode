@@ -38,3 +38,4 @@ var Property = /*#__PURE__*/function () {
 }();
 
 exports["default"] = Property;
+//# sourceMappingURL=Property.js.map

@@ -300,3 +300,4 @@ function addNodeRelationshipToStatement(neode, builder, alias, rel_alias, target
 
   builder[mode](alias).relationship(relationship.relationship(), relationship.direction(), rel_alias).to(target_alias);
 }
+//# sourceMappingURL=WriteUtils.js.map

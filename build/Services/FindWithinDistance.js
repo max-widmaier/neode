@@ -64,3 +64,4 @@ function FindWithinDistance(neode, model, location_property, point, distance, pr
     return neode.hydrate(res, alias);
   });
 }
+//# sourceMappingURL=FindWithinDistance.js.map

@@ -6,4 +6,5 @@ coverage/
 .env
 .nyc_output
 config/**/*
-test.js
+test.jsa
+build/

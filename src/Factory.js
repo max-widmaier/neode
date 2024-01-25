@@ -1,4 +1,4 @@
-import Collection from './Collection';
+import EntityCollection from './EntityCollection';
 import Node from './Node';
 import Relationship from './Relationship';
 import neo4j from 'neo4j-driver';
@@ -38,7 +38,7 @@ export default class Factory {
      * @param  {Object}          res            Neo4j result set
      * @param  {String}          alias          Alias of node to pluck
      * @param  {Definition|null} definition     Force Definition
-     * @return {Collection}
+     * @return {EntityCollection}
      */
 
     hydrate(res, alias, definition) {
@@ -48,7 +48,7 @@ export default class Factory {
 
         const nodes = res.records.map( row => this.hydrateNode(row.get(alias), definition) );
 
-        return new Collection(this._neode, nodes);
+        return new EntityCollection(this._neode, nodes);
     }
 
     /**
@@ -120,7 +120,7 @@ export default class Factory {
                     break;
 
                 case 'nodes':
-                    node.setEager( name, new Collection(this._neode, record[ name ].map(value => this.hydrateNode(value))) );
+                    node.setEager( name, new EntityCollection(this._neode, record[ name ].map(value => this.hydrateNode(value))) );
                     break;
 
                 case 'relationship':
@@ -128,7 +128,7 @@ export default class Factory {
                     break;
 
                 case 'relationships':
-                    node.setEager( name, new Collection(this._neode, record[ name ].map(value => this.hydrateRelationship(eager, value, node))) );
+                    node.setEager( name, new EntityCollection(this._neode, record[ name ].map(value => this.hydrateRelationship(eager, value, node))) );
                     break;
             }
         });

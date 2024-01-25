@@ -38,3 +38,4 @@ function UpdateNode(neode, model, identity, properties) {
     });
   });
 }
+//# sourceMappingURL=UpdateNode.js.map

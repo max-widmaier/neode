@@ -5,7 +5,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports["default"] = void 0;
 
-var _Collection = _interopRequireDefault(require("./Collection"));
+var _EntityCollection = _interopRequireDefault(require("./EntityCollection"));
 
 var _Node = _interopRequireDefault(require("./Node"));
 
@@ -62,7 +62,7 @@ var Factory = /*#__PURE__*/function () {
      * @param  {Object}          res            Neo4j result set
      * @param  {String}          alias          Alias of node to pluck
      * @param  {Definition|null} definition     Force Definition
-     * @return {Collection}
+     * @return {EntityCollection}
      */
 
   }, {
@@ -77,7 +77,7 @@ var Factory = /*#__PURE__*/function () {
       var nodes = res.records.map(function (row) {
         return _this.hydrateNode(row.get(alias), definition);
       });
-      return new _Collection["default"](this._neode, nodes);
+      return new _EntityCollection["default"](this._neode, nodes);
     }
     /**
      * Get the definition by a set of labels
@@ -149,7 +149,7 @@ var Factory = /*#__PURE__*/function () {
             break;
 
           case 'nodes':
-            node.setEager(name, new _Collection["default"](_this2._neode, record[name].map(function (value) {
+            node.setEager(name, new _EntityCollection["default"](_this2._neode, record[name].map(function (value) {
               return _this2.hydrateNode(value);
             })));
             break;
@@ -159,7 +159,7 @@ var Factory = /*#__PURE__*/function () {
             break;
 
           case 'relationships':
-            node.setEager(name, new _Collection["default"](_this2._neode, record[name].map(function (value) {
+            node.setEager(name, new _EntityCollection["default"](_this2._neode, record[name].map(function (value) {
               return _this2.hydrateRelationship(eager, value, node);
             })));
             break;
@@ -204,3 +204,4 @@ var Factory = /*#__PURE__*/function () {
 }();
 
 exports["default"] = Factory;
+//# sourceMappingURL=Factory.js.map

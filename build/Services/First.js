@@ -36,3 +36,4 @@ function First(neode, model, key, value) {
     return neode.hydrateFirst(res, alias, model);
   });
 }
+//# sourceMappingURL=First.js.map

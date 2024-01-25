@@ -23,7 +23,7 @@ var _TransactionError = _interopRequireDefault(require("./TransactionError"));
 
 var _Builder = _interopRequireDefault(require("./Query/Builder"));
 
-var _Collection = _interopRequireDefault(require("./Collection"));
+var _EntityCollection = _interopRequireDefault(require("./EntityCollection"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
@@ -411,6 +411,7 @@ var Neode = /*#__PURE__*/function () {
   }, {
     key: "batch",
     value: function batch(queries) {
+      console.log(queries);
       var tx = this.transaction();
       var output = [];
       var errors = [];
@@ -531,7 +532,7 @@ var Neode = /*#__PURE__*/function () {
      * @param  {Object}          res            Neo4j result set
      * @param  {String}          alias          Alias of node to pluck
      * @param  {Definition|null} definition     Force Definition
-     * @return {Collection}
+     * @return {EntityCollection}
      */
 
   }, {
@@ -556,13 +557,13 @@ var Neode = /*#__PURE__*/function () {
      * Turn an array into a Collection
      *
      * @param  {Array} array An array
-     * @return {Collection}
+     * @return {EntityCollection}
      */
 
   }, {
     key: "toCollection",
     value: function toCollection(array) {
-      return new _Collection["default"](this, array);
+      return new _EntityCollection["default"](this, array);
     }
   }], [{
     key: "fromEnv",
@@ -613,3 +614,4 @@ var Neode = /*#__PURE__*/function () {
 
 exports["default"] = Neode;
 module.exports = Neode;
+//# sourceMappingURL=index.js.map

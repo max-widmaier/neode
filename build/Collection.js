@@ -122,3 +122,4 @@ var Collection = /*#__PURE__*/function () {
 }();
 
 exports["default"] = Collection;
+//# sourceMappingURL=Collection.js.map

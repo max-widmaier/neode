@@ -182,3 +182,4 @@ var Queryable = /*#__PURE__*/function () {
 }();
 
 exports["default"] = Queryable;
+//# sourceMappingURL=Queryable.js.map

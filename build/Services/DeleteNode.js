@@ -104,3 +104,4 @@ function DeleteNode(neode, identity, model) {
   builder.detachDelete(alias);
   return builder.execute(_Builder.mode.WRITE);
 }
+//# sourceMappingURL=DeleteNode.js.map

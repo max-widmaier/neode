@@ -22,3 +22,4 @@ function FindById(neode, model, id) {
     return neode.hydrateFirst(res, alias, model);
   });
 }
+//# sourceMappingURL=FindById.js.map

@@ -42,3 +42,4 @@ function FindAll(neode, model, properties, order, limit, skip) {
     return neode.hydrate(res, alias);
   });
 }
+//# sourceMappingURL=FindAll.js.map

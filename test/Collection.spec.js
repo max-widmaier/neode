@@ -1,12 +1,12 @@
 import {assert, expect} from 'chai';
 import Node from '../src/Node';
-import Collection from '../src/Collection';
+import EntityCollection from '../src/EntityCollection';
 
 describe('Collection.js', () => {
     const neode = '__neode__';
     const values = [1, 2, 3, 4];
 
-    const collection = new Collection(neode, values);
+    const collection = new EntityCollection(neode, values);
 
     describe('::constructor', () => {
         it('should construct', () => {
@@ -15,7 +15,7 @@ describe('Collection.js', () => {
         });
 
         it('should construct with an empty array', () => {
-            const collection = new Collection(neode);
+            const collection = new EntityCollection(neode);
             expect(collection._neode).to.equal(neode);
             expect(collection._values).to.deep.equal([]);
         });
@@ -82,7 +82,7 @@ describe('Collection.js', () => {
             }
         }
 
-        const jsonTest = new Collection(null, [
+        const jsonTest = new EntityCollection(null, [
             new TestItem(1),
             new TestItem(2),
             new TestItem(3),

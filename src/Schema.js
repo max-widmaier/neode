@@ -1,15 +1,15 @@
 
 
 function UniqueConstraintCypher(label, property, mode = 'CREATE') {
-    return `${mode} CONSTRAINT ON (model:${label}) ASSERT model.${property} IS UNIQUE`;
+    return `${mode} CONSTRAINT FOR (model:${label}) REQUIRE model.${property} IS UNIQUE`;
 }
 
 function ExistsConstraintCypher(label, property, mode = 'CREATE') {
-    return `${mode} CONSTRAINT ON (model:${label}) ASSERT EXISTS(model.${property})`;
+    return `${mode} CONSTRAINT FOR (model:${label}) REQUIRE EXISTS(model.${property})`;
 }
 
 function IndexCypher(label, property, mode = 'CREATE') {
-    return `${mode} INDEX ON :${label}(${property})`;
+    return `${mode} INDEX FOR :${label}(${property})`;
 }
 
 function runAsync(session, queries, resolve, reject) {

@@ -37,3 +37,4 @@ function Create(neode, model, properties) {
     });
   });
 }
+//# sourceMappingURL=Create.js.map

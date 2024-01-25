@@ -7,7 +7,7 @@ import ModelMap from './ModelMap';
 import Schema from './Schema';
 import TransactionError from './TransactionError';
 import Builder from './Query/Builder';
-import Collection from './Collection';
+import EntityCollection from './EntityCollection';
 
 export default class Neode {
 
@@ -383,6 +383,7 @@ export default class Neode {
      * @return {Promise}
      */
     batch(queries) {
+        console.log(queries)
         const tx = this.transaction();
         const output = [];
         const errors = [];
@@ -492,7 +493,7 @@ export default class Neode {
      * @param  {Object}          res            Neo4j result set
      * @param  {String}          alias          Alias of node to pluck
      * @param  {Definition|null} definition     Force Definition
-     * @return {Collection}
+     * @return {EntityCollection}
      */
     hydrate(res, alias, definition) {
         return this.factory.hydrate(res, alias, definition);
@@ -513,10 +514,10 @@ export default class Neode {
      * Turn an array into a Collection
      *
      * @param  {Array} array An array
-     * @return {Collection}
+     * @return {EntityCollection}
      */
     toCollection(array) {
-        return new Collection(this, array);
+        return new EntityCollection(this, array);
     }
 
 }

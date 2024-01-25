@@ -53,3 +53,4 @@ var ValidationError = /*#__PURE__*/function (_Error) {
 }( /*#__PURE__*/_wrapNativeSuper(Error));
 
 exports["default"] = ValidationError;
+//# sourceMappingURL=ValidationError.js.map

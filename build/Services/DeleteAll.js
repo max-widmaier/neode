@@ -10,3 +10,4 @@ function DeleteAll(neode, model) {
   var query = "MATCH (node:".concat(model.labels().join(':'), ") DETACH DELETE node");
   return neode.writeCypher(query);
 }
+//# sourceMappingURL=DeleteAll.js.map

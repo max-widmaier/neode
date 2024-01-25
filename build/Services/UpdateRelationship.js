@@ -33,3 +33,4 @@ function UpdateRelationship(neode, model, identity, properties) {
     });
   });
 }
+//# sourceMappingURL=UpdateRelationship.js.map

@@ -42,7 +42,7 @@ var TransactionError = /*#__PURE__*/function (_Error) {
 
     _classCallCheck(this, TransactionError);
 
-    _this = _super.call(this, ERROR_TRANSACTION_FAILED, 500);
+    _this = _super.call(this, JSON.stringify(errors));
     _this.errors = errors;
     return _this;
   }
@@ -51,3 +51,4 @@ var TransactionError = /*#__PURE__*/function (_Error) {
 }( /*#__PURE__*/_wrapNativeSuper(Error));
 
 exports["default"] = TransactionError;
+//# sourceMappingURL=TransactionError.js.map

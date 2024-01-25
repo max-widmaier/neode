@@ -1,10 +1,13 @@
-export default class Collection {
+/**
+ * Collection of Nodes/Relationships
+ */
+export default class EntityCollection {
 
     /**
      * @constructor
      * @param  {Neode} neode    Neode Instance
-     * @param  {Node[]} values  Array of Node
-     * @return {Collection}
+     * @param  {Entity[]} values  Array of Nodes or Relationships
+     * @return {EntityCollection}
      */
     constructor(neode, values) {
         this._neode = neode;
@@ -29,7 +32,7 @@ export default class Collection {
 
 
     /**
-     * Get a value by it's index
+     * Get a value by its index
      *
      * @param  {Int} index
      * @return {Node}
@@ -86,5 +89,4 @@ export default class Collection {
             return value.toJson();
         }));
     }
-
 }

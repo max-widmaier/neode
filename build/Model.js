@@ -331,3 +331,4 @@ var Model = /*#__PURE__*/function (_Queryable) {
 }(_Queryable2["default"]);
 
 exports["default"] = Model;
+//# sourceMappingURL=Model.js.map

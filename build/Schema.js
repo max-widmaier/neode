@@ -13,17 +13,17 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 
 function UniqueConstraintCypher(label, property) {
   var mode = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 'CREATE';
-  return "".concat(mode, " CONSTRAINT ON (model:").concat(label, ") ASSERT model.").concat(property, " IS UNIQUE");
+  return "".concat(mode, " CONSTRAINT FOR (model:").concat(label, ") REQUIRE model.").concat(property, " IS UNIQUE");
 }
 
 function ExistsConstraintCypher(label, property) {
   var mode = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 'CREATE';
-  return "".concat(mode, " CONSTRAINT ON (model:").concat(label, ") ASSERT EXISTS(model.").concat(property, ")");
+  return "".concat(mode, " CONSTRAINT FOR (model:").concat(label, ") REQUIRE EXISTS(model.").concat(property, ")");
 }
 
 function IndexCypher(label, property) {
   var mode = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 'CREATE';
-  return "".concat(mode, " INDEX ON :").concat(label, "(").concat(property, ")");
+  return "".concat(mode, " INDEX FOR :").concat(label, "(").concat(property, ")");
 }
 
 function runAsync(session, queries, resolve, reject) {
@@ -112,3 +112,4 @@ var Schema = /*#__PURE__*/function () {
 }();
 
 exports["default"] = Schema;
+//# sourceMappingURL=Schema.js.map

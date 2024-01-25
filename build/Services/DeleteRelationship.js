@@ -11,3 +11,4 @@ function DeleteRelationship(neode, identity) {
     identity: identity
   });
 }
+//# sourceMappingURL=DeleteRelationship.js.map

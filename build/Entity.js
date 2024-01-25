@@ -172,3 +172,4 @@ var Entity = /*#__PURE__*/function () {
 }();
 
 exports["default"] = Entity;
+//# sourceMappingURL=Entity.js.map

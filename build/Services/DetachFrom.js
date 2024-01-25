@@ -15,3 +15,4 @@ function DetachFrom(neode, from, to) {
     return [from, to];
   });
 }
+//# sourceMappingURL=DetachFrom.js.map

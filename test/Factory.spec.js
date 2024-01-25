@@ -1,5 +1,5 @@
 import {assert, expect} from 'chai';
-import Collection from '../src/Collection';
+import EntityCollection from '../src/EntityCollection';
 import Factory from '../src/Factory';
 import Model from '../src/Model';
 import Node from '../src/Node';
@@ -157,7 +157,7 @@ describe('Factory.js', () => {
         it('should return an empty node collection', () => {
             const output = factory.hydrate({ records: [] });
 
-            expect( output ).to.be.an.instanceOf(Collection);
+            expect( output ).to.be.an.instanceOf(EntityCollection);
             expect( output.length ).to.equal(0);
         });
 
@@ -174,7 +174,7 @@ describe('Factory.js', () => {
                     return factory.hydrate(res, 'n');
                 })
                 .then(res => {
-                    expect( res ).to.be.an.instanceOf(Collection);
+                    expect( res ).to.be.an.instanceOf(EntityCollection);
                     expect( res.length ).to.equal(2);
 
                     expect( res.get(0).get('id') ).to.equal(1);
@@ -200,7 +200,7 @@ describe('Factory.js', () => {
                     return factory.hydrate(res, 'n', alt_model);
                 })
                 .then(res => {
-                    expect( res ).to.be.an.instanceOf(Collection);
+                    expect( res ).to.be.an.instanceOf(EntityCollection);
                     expect( res.length ).to.equal(2);
 
                     expect( res.get(0).get('id') ).to.equal(1);
@@ -249,7 +249,7 @@ describe('Factory.js', () => {
                     expect( relationship.get('prop') ).to.equal(1.234);
 
                     // Incoming Relationships
-                    expect( node.get('relationships') ).to.be.an.instanceOf(Collection);
+                    expect( node.get('relationships') ).to.be.an.instanceOf(EntityCollection);
 
                     expect( node.get('relationships').first().startNode().get('id').toNumber() ).to.equal(5);
                     expect( node.get('relationships').first().endNode().get('id').toNumber() ).to.equal(3);
@@ -260,7 +260,7 @@ describe('Factory.js', () => {
                     expect( node.get('node').get('id').toNumber() ).to.equal(6);
 
                     // Incoming Nodes
-                    expect( node.get('nodes') ).to.be.an.instanceOf(Collection);
+                    expect( node.get('nodes') ).to.be.an.instanceOf(EntityCollection);
                     expect( node.get('nodes').first().get('id').toNumber() ).to.equal(7);
 
                     return relationship.toJson();
@@ -289,7 +289,7 @@ describe('Factory.js', () => {
                     return factory.hydrate(res, 't')
                 })
                 .then(output => {
-                    expect( output ).to.be.an.instanceOf(Collection);
+                    expect( output ).to.be.an.instanceOf(EntityCollection);
                     expect( output.length ).to.equal(1);
 
                     const first = output.first();

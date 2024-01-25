@@ -2,7 +2,7 @@ import {assert, expect} from 'chai';
 import Neode from '../src/index';
 import Model from '../src/Model';
 import Node from '../src/Node';
-import Collection from '../src/Collection';
+import EntityCollection from '../src/EntityCollection';
 import Property from '../src/Property';
 import Builder from '../src/Query/Builder';
 import Relationship from '../src/Relationship';
@@ -393,7 +393,7 @@ describe('index.js', () => {
         it('should return a collection of nodes', (done) => {
             instance.all(label, {}, {}, 1, 0)
                 .then(res => {
-                    expect(res).to.be.an.instanceOf(Collection);
+                    expect(res).to.be.an.instanceOf(EntityCollection);
                 })
                 .then(() => done())
                 .catch(e => done(e));
