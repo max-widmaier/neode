@@ -11,15 +11,18 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
-var Collection = /*#__PURE__*/function () {
+/**
+ * Collection of Nodes/Relationships
+ */
+var EntityCollection = /*#__PURE__*/function () {
   /**
    * @constructor
    * @param  {Neode} neode    Neode Instance
-   * @param  {Node[]} values  Array of Node
-   * @return {Collection}
+   * @param  {Entity[]} values  Array of Nodes or Relationships
+   * @return {EntityCollection}
    */
-  function Collection(neode, values) {
-    _classCallCheck(this, Collection);
+  function EntityCollection(neode, values) {
+    _classCallCheck(this, EntityCollection);
 
     this._neode = neode;
     this._values = values || [];
@@ -31,7 +34,7 @@ var Collection = /*#__PURE__*/function () {
    */
 
 
-  _createClass(Collection, [{
+  _createClass(EntityCollection, [{
     key: Symbol.iterator,
 
     /**
@@ -41,7 +44,7 @@ var Collection = /*#__PURE__*/function () {
       return this._values.values();
     }
     /**
-     * Get a value by it's index
+     * Get a value by its index
      *
      * @param  {Int} index
      * @return {Node}
@@ -118,8 +121,7 @@ var Collection = /*#__PURE__*/function () {
     }
   }]);
 
-  return Collection;
+  return EntityCollection;
 }();
 
-exports["default"] = Collection;
-//# sourceMappingURL=Collection.js.map
+exports["default"] = EntityCollection;
