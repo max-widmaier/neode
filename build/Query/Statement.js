@@ -30,6 +30,7 @@ var Statement = /*#__PURE__*/function () {
     this._detach_delete = [];
     this._delete = [];
     this._return = [];
+    this._distinct_return = [];
     this._set = [];
     this._on_create_set = [];
     this._on_match_set = [];
@@ -93,6 +94,16 @@ var Statement = /*#__PURE__*/function () {
       }
 
       this._return = this._return.concat(values);
+      return this;
+    }
+  }, {
+    key: "returnDistinct",
+    value: function returnDistinct() {
+      for (var _len4 = arguments.length, values = new Array(_len4), _key4 = 0; _key4 < _len4; _key4++) {
+        values[_key4] = arguments[_key4];
+      }
+
+      this._distinct_return = this._distinct_return.concat(values);
       return this;
     }
   }, {
@@ -214,6 +225,13 @@ var Statement = /*#__PURE__*/function () {
       if (this._return.length) {
         output.push('RETURN');
         output.push(this._return.map(function (output) {
+          return output.toString();
+        }));
+      }
+
+      if (this._distinct_return.length) {
+        output.push('RETURN DISTINCT');
+        output.push(this._distinct_return.map(function (output) {
           return output.toString();
         }));
       }

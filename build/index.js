@@ -411,7 +411,6 @@ var Neode = /*#__PURE__*/function () {
   }, {
     key: "batch",
     value: function batch(queries) {
-      console.log(queries);
       var tx = this.transaction();
       var output = [];
       var errors = [];

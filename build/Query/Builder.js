@@ -585,6 +585,21 @@ var Builder = /*#__PURE__*/function () {
       return this;
     }
     /**
+     * Set Return distinct fields
+     * @param args {...string} Fields to return
+     * @returns {Builder}
+     */
+
+  }, {
+    key: "returnDistinct",
+    value: function returnDistinct() {
+      var _this$_current4;
+
+      (_this$_current4 = this._current).returnDistinct.apply(_this$_current4, arguments);
+
+      return this;
+    }
+    /**
      * Set Record Limit
      *
      * @param  {Int} limit

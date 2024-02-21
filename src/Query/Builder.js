@@ -454,6 +454,17 @@ export default class Builder {
     }
 
     /**
+     * Set Return distinct fields
+     * @param args {...string} Fields to return
+     * @returns {Builder}
+     */
+    returnDistinct(...args) {
+        this._current.returnDistinct(...args);
+
+        return this;
+    }
+
+    /**
      * Set Record Limit
      *
      * @param  {Int} limit

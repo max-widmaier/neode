@@ -383,7 +383,6 @@ export default class Neode {
      * @return {Promise}
      */
     batch(queries) {
-        console.log(queries)
         const tx = this.transaction();
         const output = [];
         const errors = [];

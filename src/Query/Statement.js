@@ -11,6 +11,7 @@ export default class Statement {
         this._detach_delete = [];
         this._delete = [];
         this._return = [];
+        this._distinct_return = [];
         this._set = [];
         this._on_create_set = [];
         this._on_match_set = [];
@@ -55,6 +56,12 @@ export default class Statement {
 
     return(...values) {
         this._return = this._return.concat(values);
+
+        return this;
+    }
+
+    returnDistinct(...values) {
+        this._distinct_return = this._distinct_return.concat(values);
 
         return this;
     }
@@ -175,6 +182,14 @@ export default class Statement {
             output.push('RETURN');
 
             output.push(this._return.map(output => {
+                return output.toString();
+            }));
+        }
+
+        if (this._distinct_return.length) {
+            output.push('RETURN DISTINCT');
+
+            output.push(this._distinct_return.map(output => {
                 return output.toString();
             }));
         }

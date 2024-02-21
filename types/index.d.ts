@@ -573,6 +573,14 @@ declare namespace Neode {
         return(...args: Array<string>): Builder;
 
         /**
+         * Set Return Fields with Distinct values
+         *
+         * @param  {...string} args
+         * @return {Builder}
+         */
+        returnDistinct(...args: Array<string>): Builder;
+
+        /**
          * Set Record Limit
          *
          * @param  {Int} limit
