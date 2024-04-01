@@ -503,7 +503,7 @@ declare namespace Neode {
          *
          * @return {Builder}
          */
-        whereStatement(prefix: string): Builder;
+        whereStatement(prefix: string, connector?: 'AND' | 'OR'): Builder;
 
         /**
          * Match a Node by a definition
@@ -514,7 +514,7 @@ declare namespace Neode {
          */
         match<T>(alias: string, model: Model<T>): Builder;
 
-        optionalMatch<T>(alias: string, model: Model<T>): Builder;
+        optionalMatch<T>(alias: string, model?: Model<T>): Builder;
 
         /**
          * Add a 'with' statement to the query
@@ -530,6 +530,13 @@ declare namespace Neode {
          * @return {Builder}
          */
         or(...args: Array<string>): Builder;
+
+        /**
+         * Create a new WhereSegment
+         * @param  {...mixed} args
+         * @return {Builder}
+         */
+        and(...args: Array<string>): Builder;
 
         /**
          * Add a where condition to the current statement.

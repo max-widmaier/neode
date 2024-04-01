@@ -18,11 +18,13 @@ exports.CONNECTOR_OR = CONNECTOR_OR;
 
 var WhereStatement = /*#__PURE__*/function () {
   function WhereStatement(prefix) {
+    var connector = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : CONNECTOR_AND;
+
     _classCallCheck(this, WhereStatement);
 
     this._prefix = prefix || '';
     this._clauses = [];
-    this._connector = CONNECTOR_AND;
+    this._connector = connector;
   }
   /**
    * Set the Connector string for chaining statements (AND, OR)
@@ -39,7 +41,7 @@ var WhereStatement = /*#__PURE__*/function () {
     /**
      * Append a new clause
      *
-     * @param  {Where}  clause  Where clause to append
+     * @param  {Where | WhereId}  clause  Where clause to append
      * @return {WhereStatement}
      */
 

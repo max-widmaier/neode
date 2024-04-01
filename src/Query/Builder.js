@@ -48,14 +48,16 @@ export default class Builder {
     /**
      * Start a new Where Segment
      *
+     * @param  {String} prefix
+     * @param {String} [connector]
      * @return {Builder}
      */
-    whereStatement(prefix) {
+    whereStatement(prefix, connector) {
         if (this._where) {
             this._current.where(this._where);
         }
 
-        this._where = new WhereStatement(prefix);
+        this._where = new WhereStatement(prefix, connector);
 
         return this;
     }
@@ -123,6 +125,17 @@ export default class Builder {
      */
     or(...args) {
         this.whereStatement('OR');
+
+        return this.where(...args);
+    }
+
+    /**
+     * Create a new WhereSegment
+     * @param  {...mixed} args
+     * @return {Builder}
+     */
+    and(...args) {
+        this.whereStatement('AND');
 
         return this.where(...args);
     }

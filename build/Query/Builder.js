@@ -106,17 +106,19 @@ var Builder = /*#__PURE__*/function () {
     /**
      * Start a new Where Segment
      *
+     * @param  {String} prefix
+     * @param {String} [connector]
      * @return {Builder}
      */
 
   }, {
     key: "whereStatement",
-    value: function whereStatement(prefix) {
+    value: function whereStatement(prefix, connector) {
       if (this._where) {
         this._current.where(this._where);
       }
 
-      this._where = new _WhereStatement["default"](prefix);
+      this._where = new _WhereStatement["default"](prefix, connector);
       return this;
     }
     /**
@@ -200,6 +202,18 @@ var Builder = /*#__PURE__*/function () {
     key: "or",
     value: function or() {
       this.whereStatement('OR');
+      return this.where.apply(this, arguments);
+    }
+    /**
+     * Create a new WhereSegment
+     * @param  {...mixed} args
+     * @return {Builder}
+     */
+
+  }, {
+    key: "and",
+    value: function and() {
+      this.whereStatement('AND');
       return this.where.apply(this, arguments);
     }
     /**

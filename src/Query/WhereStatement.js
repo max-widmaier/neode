@@ -3,10 +3,10 @@ export const CONNECTOR_OR = 'OR';
 
 export default class WhereStatement {
 
-    constructor(prefix) {
+    constructor(prefix, connector = CONNECTOR_AND) {
         this._prefix = prefix || '';
         this._clauses = [];
-        this._connector = CONNECTOR_AND;
+        this._connector = connector;
     }
 
     /**
@@ -21,7 +21,7 @@ export default class WhereStatement {
     /**
      * Append a new clause
      *
-     * @param  {Where}  clause  Where clause to append
+     * @param  {Where | WhereId}  clause  Where clause to append
      * @return {WhereStatement}
      */
     append(clause) {
