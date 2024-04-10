@@ -42,7 +42,7 @@ var ValidationError = /*#__PURE__*/function (_Error) {
 
     _classCallCheck(this, ValidationError);
 
-    _this = _super.call(this, ERROR_VALIDATION, 422);
+    _this = _super.call(this, "".concat(ERROR_VALIDATION, " - ").concat(_joiError.message), 422);
     _this.details = details;
     _this.input = input;
     _this._joiError = _joiError;

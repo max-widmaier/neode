@@ -208,6 +208,39 @@ export default class Builder {
     }
 
     /**
+     * Add a where condition to the current statement, specifically comparing a property to a date value
+     * @param {String} arg Node property to compare
+     * @param {String} operator Comparison operator
+     * @param {Date} date Date to compare to
+     * @param {String} type Date type (datetime, date, time)
+     * @return {Builder}
+     */
+    whereDate(arg, operator, date, type = 'datetime') {
+        let dateString = date.toISOString();
+
+        let right;
+        switch (type) {
+            case 'datetime':
+                right = this._addWhereParameter(arg, date.toISOString());
+                break;
+            case 'date':
+                right = this._addWhereParameter(arg, date.toISOString().split('T')[0]);
+                break;
+            case 'time':
+                right = this._addWhereParameter(arg, date.toISOString().split('T')[1]);
+                break;
+            default:
+                throw new Error('Invalid date type');
+        }
+        
+        this._params[ right ] = dateString;
+
+        // Becomes WHERE arg operator datetime($right), date($right), or time($right)
+        this._where.append(new Where(arg, operator, `${type}($${right})`));
+        return this;
+    }
+
+    /**
      * Query on Internal ID
      *
      * @param  {String} alias

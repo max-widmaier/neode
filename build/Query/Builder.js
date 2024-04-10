@@ -295,6 +295,45 @@ var Builder = /*#__PURE__*/function () {
       return this;
     }
     /**
+     * Add a where condition to the current statement, specifically comparing a property to a date value
+     * @param {String} arg Node property to compare
+     * @param {String} operator Comparison operator
+     * @param {Date} date Date to compare to
+     * @param {String} type Date type (datetime, date, time)
+     * @return {Builder}
+     */
+
+  }, {
+    key: "whereDate",
+    value: function whereDate(arg, operator, date) {
+      var type = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 'datetime';
+      var dateString = date.toISOString();
+      var right;
+
+      switch (type) {
+        case 'datetime':
+          right = this._addWhereParameter(arg, date.toISOString());
+          break;
+
+        case 'date':
+          right = this._addWhereParameter(arg, date.toISOString().split('T')[0]);
+          break;
+
+        case 'time':
+          right = this._addWhereParameter(arg, date.toISOString().split('T')[1]);
+          break;
+
+        default:
+          throw new Error('Invalid date type');
+      }
+
+      this._params[right] = dateString; // Becomes WHERE arg operator datetime($right), date($right), or time($right)
+
+      this._where.append(new _Where["default"](arg, operator, "".concat(type, "($").concat(right, ")")));
+
+      return this;
+    }
+    /**
      * Query on Internal ID
      *
      * @param  {String} alias

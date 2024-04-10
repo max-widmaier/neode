@@ -547,6 +547,17 @@ declare namespace Neode {
         where(...args: Array<string>): Builder;
 
         /**
+         * Add a where condition to the current statement, specifically comparing a property to a date value
+         * @param arg Node property to compare
+         * @param operator Comparison operator
+         * @param date Date to compare to
+         * @param type Date type, either 'datetime', 'date', or 'time' (default 'datetime')
+         * This should be the type of the property being compared. (If the property is a datetime, use 'datetime', etc.)
+         * @return {Builder}
+         */
+        whereDate(arg: string, operator: '=' | '<' | '<=' | '>' | '>=', date: Date, type?: 'datetime' | 'date' | 'time'): Builder;
+
+        /**
          * Query on Internal ID
          *
          * @param  {String} alias
