@@ -103,27 +103,6 @@ export default class Neode {
     }
 
     /**
-     * Scan a directory for Models
-     *
-     * @param  {String} directory   Directory to scan
-     * @return {Neode}
-     */
-    withDirectory(directory) {
-        const files = fs.readdirSync(directory);
-
-        files.filter(file => path.extname(file).toLowerCase() === '.js')
-            .forEach(file => {
-                const model = file.replace('.js', '');
-                const path = directory +'/'+ file;
-                const schema = require("" + path);
-
-                return this.model(model, schema);
-            });
-
-        return this;
-    }
-
-    /**
      * Set the default database for all future connections
      *
      * @param {String} database
