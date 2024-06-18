@@ -595,7 +595,7 @@ export default class Builder {
     /**
      * Complete a relationship
      * @param  {String} alias       Alias
-     * @param  {Model}  model       Model definition
+     * @param  {Model | false}  model       Model definition
      * @param  {Object} properties  Properties
      * @return {Builder}
      */

@@ -636,10 +636,10 @@ declare namespace Neode {
         /**
          * Complete a relationship
          * @param  {String} alias Alias
-         * @param  {Model} model  Model definition
+         * @param  {Model | false} model  Model definition. False for no model
          * @return {Builder}
          */
-        to<T>(alias: string, model: Model<T>): Builder;
+        to<T>(alias: string, model: Model<T> | false): Builder;
 
         /**
          * Complete the relationship statement to point to anything
