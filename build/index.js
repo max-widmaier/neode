@@ -88,32 +88,6 @@ var Neode = /*#__PURE__*/function () {
       return this;
     }
     /**
-     * Scan a directory for Models
-     *
-     * @param  {String} directory   Directory to scan
-     * @return {Neode}
-     */
-
-  }, {
-    key: "withDirectory",
-    value: function withDirectory(directory) {
-      var _this2 = this;
-
-      var files = _fs["default"].readdirSync(directory);
-
-      files.filter(function (file) {
-        return _path["default"].extname(file).toLowerCase() === '.js';
-      }).forEach(function (file) {
-        var model = file.replace('.js', '');
-        var path = directory + '/' + file;
-
-        var schema = require("" + path);
-
-        return _this2.model(model, schema);
-      });
-      return this;
-    }
-    /**
      * Set the default database for all future connections
      *
      * @param {String} database
