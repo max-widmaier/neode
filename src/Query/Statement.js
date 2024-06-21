@@ -1,6 +1,7 @@
 import Relationship from './Relationship';
 import RelationshipType from '../RelationshipType';
 import Property from './Property';
+import FullText from "./FullText";
 
 export default class Statement {
     constructor(prefix) {
@@ -16,6 +17,13 @@ export default class Statement {
         this._on_create_set = [];
         this._on_match_set = [];
         this._remove = [];
+        this._fullText = [];
+    }
+
+    fullText(index, type, searchTerms, operator = 'AND', alias = 'res', scoreAlias = 'score') {
+        this._fullText.push(new FullText(index,  type, searchTerms, operator, alias, scoreAlias));
+
+        return this;
     }
 
     match(match) {
@@ -115,6 +123,12 @@ export default class Statement {
 
     toString(includePrefix = true) {
         const output = [];
+
+        if (this._fullText.length) {
+            output.push(this._fullText.map(statement => {
+                return statement.toString();
+            }).join('\n'));
+        }
 
         if (this._pattern.length) {
             if ( includePrefix ) output.push(this._prefix);

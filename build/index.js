@@ -4,8 +4,6 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports["default"] = void 0;
-var _fs = _interopRequireDefault(require("fs"));
-var _path = _interopRequireDefault(require("path"));
 var _neo4jDriver = _interopRequireDefault(require("neo4j-driver"));
 var _Factory = _interopRequireDefault(require("./Factory"));
 var _Model = _interopRequireDefault(require("./Model"));

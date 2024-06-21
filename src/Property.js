@@ -1,12 +1,12 @@
 /**
  *  Container holding information for a property.
- * 
+ *
  * TODO: Schema validation to enforce correct data types
  */
 export default class Property {
     constructor(name, schema) {
-        if ( typeof schema == 'string' ) {
-            schema = {type:schema};
+        if (typeof schema == 'string') {
+            schema = {type: schema};
         }
 
         this._name = name;
@@ -14,7 +14,7 @@ export default class Property {
 
         // TODO: Clean Up
         Object.keys(schema).forEach(key => {
-            this['_'+ key] = schema[key];
+            this['_' + key] = schema[key];
         });
     }
 
@@ -47,7 +47,32 @@ export default class Property {
     }
 
     fullTextIndexed() {
-        return this._fullText || false;
+        return this.type() === 'nodeFulltext' || this.type() === 'relationshipFulltext';
+    }
+
+    /**
+     * Gets the full text index definition for this property.
+     * If the type is nodeFulltext, the models field will be populated with the labels of the nodes that this property is indexed on.
+     * If the type is relationshipFulltext, the relations field will be populated with the names of the relationships that this property is indexed on.
+     *
+     * @return {{
+     *     type: 'nodeFulltext'|'relationshipFulltext',
+     *     models?: string[],
+     *     relations?: string[],
+     *     properties: string[],
+     *     options: {
+     *         indexConfig: {
+     *             `fulltext.analyzer`: 'english' | 'standard' | 'simple' | 'whitespace' | 'stop' | 'keyword' | 'standard-folding',
+     *             `fulltext.eventually_consistent`: boolean,
+     *         }
+     *     }
+     * }|null}
+     */
+    fullTextIndexDefinition() {
+        if (!this.fullTextIndexed()) {
+            return null;
+        }
+        return this._schema || null;
     }
 
     protected() {

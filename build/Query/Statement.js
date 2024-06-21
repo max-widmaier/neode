@@ -7,6 +7,7 @@ exports["default"] = void 0;
 var _Relationship = _interopRequireDefault(require("./Relationship"));
 var _RelationshipType = _interopRequireDefault(require("../RelationshipType"));
 var _Property = _interopRequireDefault(require("./Property"));
+var _FullText = _interopRequireDefault(require("./FullText"));
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -29,8 +30,18 @@ var Statement = exports["default"] = /*#__PURE__*/function () {
     this._on_create_set = [];
     this._on_match_set = [];
     this._remove = [];
+    this._fullText = [];
   }
   _createClass(Statement, [{
+    key: "fullText",
+    value: function fullText(index, type, searchTerms) {
+      var operator = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 'AND';
+      var alias = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 'res';
+      var scoreAlias = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : 'score';
+      this._fullText.push(new _FullText["default"](index, type, searchTerms, operator, alias, scoreAlias));
+      return this;
+    }
+  }, {
     key: "match",
     value: function match(_match) {
       this._pattern.push(_match);
@@ -147,6 +158,11 @@ var Statement = exports["default"] = /*#__PURE__*/function () {
     value: function toString() {
       var includePrefix = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : true;
       var output = [];
+      if (this._fullText.length) {
+        output.push(this._fullText.map(function (statement) {
+          return statement.toString();
+        }).join('\n'));
+      }
       if (this._pattern.length) {
         if (includePrefix) output.push(this._prefix);
         output.push(this._pattern.map(function (statement) {

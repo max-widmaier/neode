@@ -74,7 +74,7 @@ export default class Builder {
         this.whereStatement('WHERE');
         this.statement();
 
-        this._current.match( new Match(alias, model, this._convertPropertyMap( alias, properties ) ) );
+        this._current.match(new Match(alias, model, this._convertPropertyMap(alias, properties)));
 
         return this;
     }
@@ -153,13 +153,13 @@ export default class Builder {
         // Try to create a unique key
         let variable = base;
 
-        while ( typeof this._params[ variable ] != "undefined" ) {
+        while (typeof this._params[variable] != "undefined") {
             attempt++;
 
             variable = `${base}_${attempt}`;
         }
 
-        this._params[ variable ] = value;
+        this._params[variable] = value;
 
         return variable;
     }
@@ -179,28 +179,25 @@ export default class Builder {
         }
 
         // If only one argument, treat it as a single string
-        if ( args.length == 1) {
+        if (args.length == 1) {
             const [arg] = args;
 
             if (Array.isArray(arg)) {
                 arg.forEach(inner => {
                     this.where(...inner);
                 });
-            }
-            else if (typeof arg == 'object') {
+            } else if (typeof arg == 'object') {
                 Object.keys(arg).forEach(key => {
                     this.where(key, arg[key]);
                 });
-            }
-            else {
+            } else {
                 this._where.append(new WhereRaw(args[0]));
             }
-        }
-        else {
+        } else {
             const [left, operator, value] = args;
             const right = this._addWhereParameter(left, value);
 
-            this._params[ right ] = value;
+            this._params[right] = value;
             this._where.append(new Where(left, operator, `$${right}`));
         }
 
@@ -232,8 +229,8 @@ export default class Builder {
             default:
                 throw new Error('Invalid date type');
         }
-        
-        this._params[ right ] = dateString;
+
+        this._params[right] = dateString;
 
         // Becomes WHERE arg operator datetime($right), date($right), or time($right)
         this._where.append(new Where(arg, operator, `${type}($${right})`));
@@ -350,7 +347,7 @@ export default class Builder {
         this.whereStatement('WHERE');
         this.statement('CREATE');
 
-        this._current.match( new Match(alias, model, this._convertPropertyMap( alias, properties ) ) );
+        this._current.match(new Match(alias, model, this._convertPropertyMap(alias, properties)));
 
         return this;
     }
@@ -361,13 +358,13 @@ export default class Builder {
      * @param {Object|null} properties
      */
     _convertPropertyMap(alias, properties) {
-        if ( properties ) {
+        if (properties) {
             return Object.keys(properties).map(key => {
                 const property_alias = `${alias}_${key}`;
 
-                this._params[ property_alias ] = properties[ key ];
+                this._params[property_alias] = properties[key];
 
-                return new Property( key, property_alias );
+                return new Property(key, property_alias);
             });
         }
 
@@ -386,7 +383,7 @@ export default class Builder {
         this.whereStatement('WHERE');
         this.statement('MERGE');
 
-        this._current.match( new Match(alias, model, this._convertPropertyMap( alias, properties ) ) );
+        this._current.match(new Match(alias, model, this._convertPropertyMap(alias, properties)));
 
         return this;
     }
@@ -400,15 +397,14 @@ export default class Builder {
      */
     set(property, value, operator = '=') {
         // Support a map of properties
-        if ( !value && property instanceof Object ) {
+        if (!value && property instanceof Object) {
             Object.keys(property).forEach(key => {
-                this.set(key, property[ key ]);
+                this.set(key, property[key]);
             });
-        }
-        else {
-            if ( value !== undefined ) {
+        } else {
+            if (value !== undefined) {
                 const alias = `set_${this._set_count}`;
-                this._params[ alias ] = value;
+                this._params[alias] = value;
 
                 this._set_count++;
 
@@ -431,14 +427,13 @@ export default class Builder {
      */
     onCreateSet(property, value, operator = '=') {
         // Support a map of properties
-        if ( value === undefined && property instanceof Object ) {
+        if (value === undefined && property instanceof Object) {
             Object.keys(property).forEach(key => {
-                this.onCreateSet(key, property[ key ]);
+                this.onCreateSet(key, property[key]);
             });
-        }
-        else {
+        } else {
             const alias = `set_${this._set_count}`;
-            this._params[ alias ] = value;
+            this._params[alias] = value;
 
             this._set_count++;
 
@@ -458,14 +453,13 @@ export default class Builder {
      */
     onMatchSet(property, value, operator = '=') {
         // Support a map of properties
-        if ( value === undefined && property instanceof Object ) {
+        if (value === undefined && property instanceof Object) {
             Object.keys(property).forEach(key => {
-                this.onMatchSet(key, property[ key ]);
+                this.onMatchSet(key, property[key]);
             });
-        }
-        else {
+        } else {
             const alias = `set_${this._set_count}`;
-            this._params[ alias ] = value;
+            this._params[alias] = value;
 
             this._set_count++;
 
@@ -547,8 +541,7 @@ export default class Builder {
             // Assume orderBy(what, how)
             order_by = new Order(args[0], args[1]);
 
-        }
-        else if (Array.isArray(args[0])) {
+        } else if (Array.isArray(args[0])) {
             // Handle array of where's
             args[0].forEach(arg => {
                 this.orderBy(arg);
@@ -558,14 +551,12 @@ export default class Builder {
         else if (typeof args[0] == 'object' && args[0].field) {
             // Assume orderBy(args[0].field, args[0].order)
             order_by = new Order(args[0].field, args[0].order);
-        }
-        else if (typeof args[0] == 'object') {
+        } else if (typeof args[0] == 'object') {
             // Assume {key: order}
             Object.keys(args[0]).forEach(key => {
                 this.orderBy(key, args[0][key]);
             });
-        }
-        else if (args[0]) {
+        } else if (args[0]) {
             // Assume orderBy(what, 'ASC')
             order_by = new Order(args[0]);
         }
@@ -575,6 +566,33 @@ export default class Builder {
         }
 
         return this;
+    }
+
+
+    /**
+     * Query a full text index
+     * @param {String} index (required) Index name as defined in the schema
+     * @param {'nodeFulltext'|'relationshipFullText'} type (required) Type of FullText index (e.g. 'nodeFulltext' or 'relationshipFullText')
+     * @param {String[]|{
+     *     key?: string,
+     *     value: string,
+     *     operator: 'AND'|'OR'|'NOT'|'+'|'-'
+     * }[]} searchTerms (required) Search terms to query or an object of properties to search on
+     *
+     * @param {'AND'|'OR'|'NOT'|'+'|'-'} operator (optional) Operator to use for the search assuming the type of search term is a string array.
+     * Defaults to 'AND'.
+     * AND: Matches all terms
+     * OR: Matches any term
+     * NOT: Matches none of the terms, must be used with more than one term.
+     * +: Requires the term to be present
+     * -: Requires the term to not be present
+     *
+     * See more at https://lucene.apache.org/core/2_9_4/queryparsersyntax.html#Boolean%20operators
+     * @param {String} alias (optional) Defaults to ${index name}
+     * @param {String} scoreAlias (optional) Defaults to ${index name}_score
+     */
+    fullText(index, type, searchTerms, alias, scoreAlias, operator = 'AND') {
+        this._current.fullText(index, type, searchTerms, operator, alias == null ? index : alias, scoreAlias == null ? index + '_score' : scoreAlias);
     }
 
     /**
@@ -600,7 +618,7 @@ export default class Builder {
      * @return {Builder}
      */
     to(alias, model, properties) {
-        this._current.match( new Match(alias, model, this._convertPropertyMap(alias, properties) ) );
+        this._current.match(new Match(alias, model, this._convertPropertyMap(alias, properties)));
 
         return this;
     }
@@ -658,7 +676,7 @@ export default class Builder {
      * @return {Promise}
      */
     execute(query_mode = mode.WRITE) {
-        const { query, params } = this.build();
+        const {query, params} = this.build();
 
         let session
 

@@ -625,6 +625,35 @@ var Builder = exports["default"] = /*#__PURE__*/function () {
     }
 
     /**
+     * Query a full text index
+     * @param {String} index (required) Index name as defined in the schema
+     * @param {'nodeFulltext'|'relationshipFullText'} type (required) Type of FullText index (e.g. 'nodeFulltext' or 'relationshipFullText')
+     * @param {String[]|{
+     *     key?: string,
+     *     value: string,
+     *     operator: 'AND'|'OR'|'NOT'|'+'|'-'
+     * }[]} searchTerms (required) Search terms to query or an object of properties to search on
+     *
+     * @param {'AND'|'OR'|'NOT'|'+'|'-'} operator (optional) Operator to use for the search assuming the type of search term is a string array.
+     * Defaults to 'AND'.
+     * AND: Matches all terms
+     * OR: Matches any term
+     * NOT: Matches none of the terms, must be used with more than one term.
+     * +: Requires the term to be present
+     * -: Requires the term to not be present
+     *
+     * See more at https://lucene.apache.org/core/2_9_4/queryparsersyntax.html#Boolean%20operators
+     * @param {String} alias (optional) Defaults to ${index name}
+     * @param {String} scoreAlias (optional) Defaults to ${index name}_score
+     */
+  }, {
+    key: "fullText",
+    value: function fullText(index, type, searchTerms, alias, scoreAlias) {
+      var operator = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : 'AND';
+      this._current.fullText(index, type, searchTerms, operator, alias == null ? index : alias, scoreAlias == null ? index + '_score' : scoreAlias);
+    }
+
+    /**
      * Add a relationship to the query
      *
      * @param  {String|RelationshipType} relationship  Relationship name or RelationshipType object

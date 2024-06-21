@@ -10,8 +10,8 @@ function IndexCypher(label, property, mode = 'CREATE') {
     return `${mode} INDEX FOR :${label}(${property})`;
 }
 
-function FullTextIndexCypher(label, property, model, mode = 'CREATE') {
-    return `${mode} FULLTEXT INDEX ${label} FOR (n:${model}) ON (n.${property})`;
+function FullTextIndexCypher(label, props, forLabel, mode = 'CREATE', options = {}) {
+    return `${mode} FULLTEXT INDEX ${label} FOR ${forLabel} ON EACH [${props.map(p => `n.${p}`).join(', ')}]${options.indexConfig ? `\nOPTIONS { indexConfig: ${JSON.stringify(options.indexConfig)} }` : ''}${mode === 'CREATE' ? ' IF NOT EXISTS' : ''}`;
 }
 
 function runAsync(session, queries, resolve, reject) {
@@ -54,7 +54,11 @@ function InstallSchema(neode) {
 
             // Full text indexes
             if (property.fullTextIndexed()) {
-                queries.push(FullTextIndexCypher(label, property.name(), model.name()));
+                let indexDef = property.fullTextIndexDefinition();
+                if (!indexDef) {
+                    throw new Error(`No index definition found for property ${property.name()} on model ${model.name()}`);
+                }
+                queries.push(FullTextIndexCypher(indexDef.label, indexDef.properties, indexDef.models, indexDef.options));
             }
         });
     });
@@ -79,6 +83,18 @@ function DropSchema(neode) {
             // Indexes
             if (property.indexed()) {
                 queries.push(IndexCypher(label, property.name(), 'DROP'));
+            }
+
+            if (property.fullTextIndexed()) {
+                let indexDef = property.fullTextIndexDefinition();
+                let forLabel = '';
+                if (property.type() === 'nodeFulltext') {
+                    forLabel = `(n:${indexDef.models.join('|')})`;
+                } else if (property.type() === 'relationshipFulltext') {
+                    forLabel = `()-[n:${indexDef.models.join('|')}]-()`;
+                }
+
+                queries.push(FullTextIndexCypher(label, indexDef.properties, forLabel, 'DROP', indexDef.options));
             }
         });
     });

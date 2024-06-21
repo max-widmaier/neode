@@ -389,11 +389,6 @@ declare namespace Neode {
              */
             tldWhitelist: string[]
         }
-
-        /**
-         * The string is a full text searchable field
-         */
-        fullText?: boolean
     }
 
     interface BaseRelationshipNodeProperties extends BaseNodeProperties {
@@ -475,11 +470,53 @@ declare namespace Neode {
         type: PropertyTypes
     }
 
+    /**
+     * Technically a full text index is disrelated to Node and is only for searching. However, it still augments Node definitions,
+     * so it is included here.
+     *
+     * If my understanding is correct, if you specify multiple models/relations, all of them need to have the specified properties.
+     */
+    interface BaseFullTextIndexProperties extends BaseNodeProperties {
+        options?: {
+            indexConfig: {
+                /**
+                 * Type of analyzer to use. Has different options for processing and scoring text.
+                 * You can find a list by running `CALL db.index.fulltext.listAvailableAnalyzers` in your Neo4J console.
+                 */
+                ['fulltext.analyzer']: 'english' | 'standard' | 'simple' | 'whitespace' | 'stop' | 'keyword' | 'standard-folding',
+
+                /**
+                 * Should the index be updated in the background at the earliest possible time?
+                 * (That isn't in the same transaction as the query)
+                 */
+                ['fulltext.eventually_consistent']: boolean,
+            }
+        },
+        properties: string[],
+    }
+
+    /**
+     * Queries using the db.index.fulltext.queryNodes procedure.
+     */
+    interface NodeFullTextIndexProperties extends BaseFullTextIndexProperties {
+        type: 'nodeFulltext',
+        models: string[],
+    }
+
+    /**
+     * Queries using the db.index.fulltext.queryRelationships procedure.
+     */
+    interface RelationshipFullTextIndexProperties extends BaseFullTextIndexProperties {
+        type: 'relationshipFulltext',
+        relations: string[],
+    }
+
     type NodeProperty = PropertyTypes
         | NumberNodeProperties | IntNodeProperties | IntegerNodeProperties | FloatNodeProperties
         | RelationshipNodeProperties | RelationshipsNodeProperties
         | NodeNodeProperties | NodesNodeProperties
-        | StringNodeProperties | OtherNodeProperties;
+        | StringNodeProperties | OtherNodeProperties |
+        NodeFullTextIndexProperties | RelationshipFullTextIndexProperties;
 
     export type SchemaObject = {
         [index: string]: NodeProperty
@@ -520,6 +557,8 @@ declare namespace Neode {
         match<T>(alias: string, model: Model<T>): Builder;
 
         optionalMatch<T>(alias: string, model?: Model<T>): Builder;
+
+        fullText(index: string,): Builder;
 
         /**
          * Add a 'with' statement to the query

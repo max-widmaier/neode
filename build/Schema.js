@@ -22,9 +22,12 @@ function IndexCypher(label, property) {
   var mode = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 'CREATE';
   return "".concat(mode, " INDEX FOR :").concat(label, "(").concat(property, ")");
 }
-function FullTextIndexCypher(label, property, model) {
+function FullTextIndexCypher(label, props, forLabel) {
   var mode = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 'CREATE';
-  return "".concat(mode, " FULLTEXT INDEX ").concat(label, " FOR (n:").concat(model, ") ON (n.").concat(property, ")");
+  var options = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : {};
+  return "".concat(mode, " FULLTEXT INDEX ").concat(label, " FOR ").concat(forLabel, " ON EACH [").concat(props.map(function (p) {
+    return "n.".concat(p);
+  }).join(', '), "]").concat(options.indexConfig ? "\nOPTIONS { indexConfig: ".concat(JSON.stringify(options.indexConfig), " }") : '').concat(mode === 'CREATE' ? ' IF NOT EXISTS' : '');
 }
 function runAsync(session, queries, resolve, reject) {
   var next = queries.pop();
@@ -60,7 +63,11 @@ function InstallSchema(neode) {
 
       // Full text indexes
       if (property.fullTextIndexed()) {
-        queries.push(FullTextIndexCypher(label, property.name(), model.name()));
+        var indexDef = property.fullTextIndexDefinition();
+        if (!indexDef) {
+          throw new Error("No index definition found for property ".concat(property.name(), " on model ").concat(model.name()));
+        }
+        queries.push(FullTextIndexCypher(indexDef.label, indexDef.properties, indexDef.models, indexDef.options));
       }
     });
   });
@@ -81,6 +88,16 @@ function DropSchema(neode) {
       // Indexes
       if (property.indexed()) {
         queries.push(IndexCypher(label, property.name(), 'DROP'));
+      }
+      if (property.fullTextIndexed()) {
+        var indexDef = property.fullTextIndexDefinition();
+        var forLabel = '';
+        if (property.type() === 'nodeFulltext') {
+          forLabel = "(n:".concat(indexDef.models.join('|'), ")");
+        } else if (property.type() === 'relationshipFulltext') {
+          forLabel = "()-[n:".concat(indexDef.models.join('|'), "]-()");
+        }
+        queries.push(FullTextIndexCypher(label, indexDef.properties, forLabel, 'DROP', indexDef.options));
       }
     });
   });

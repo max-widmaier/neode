@@ -12,7 +12,7 @@ function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" 
 function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
 /**
  *  Container holding information for a property.
- * 
+ *
  * TODO: Schema validation to enforce correct data types
  */
 var Property = exports["default"] = /*#__PURE__*/function () {
@@ -70,7 +70,34 @@ var Property = exports["default"] = /*#__PURE__*/function () {
   }, {
     key: "fullTextIndexed",
     value: function fullTextIndexed() {
-      return this._fullText || false;
+      return this.type() === 'nodeFulltext' || this.type() === 'relationshipFulltext';
+    }
+
+    /**
+     * Gets the full text index definition for this property.
+     * If the type is nodeFulltext, the models field will be populated with the labels of the nodes that this property is indexed on.
+     * If the type is relationshipFulltext, the relations field will be populated with the names of the relationships that this property is indexed on.
+     *
+     * @return {{
+     *     type: 'nodeFulltext'|'relationshipFulltext',
+     *     models?: string[],
+     *     relations?: string[],
+     *     properties: string[],
+     *     options: {
+     *         indexConfig: {
+     *             `fulltext.analyzer`: 'english' | 'standard' | 'simple' | 'whitespace' | 'stop' | 'keyword' | 'standard-folding',
+     *             `fulltext.eventually_consistent`: boolean,
+     *         }
+     *     }
+     * }|null}
+     */
+  }, {
+    key: "fullTextIndexDefinition",
+    value: function fullTextIndexDefinition() {
+      if (!this.fullTextIndexed()) {
+        return null;
+      }
+      return this._schema || null;
     }
   }, {
     key: "protected",

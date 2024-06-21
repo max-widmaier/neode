@@ -1,5 +1,3 @@
-import fs from 'fs';
-import path from 'path';
 import neo4j from 'neo4j-driver';
 import Factory from './Factory';
 import Model from './Model';
