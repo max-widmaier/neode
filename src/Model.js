@@ -21,6 +21,7 @@ export default class Model extends Queryable {
 
         this._unique = [];
         this._indexed = [];
+        this._full_text_indexed = [];
         this._hidden = [];
         this._readonly = [];
 
@@ -120,6 +121,10 @@ export default class Model extends Queryable {
         // Is this property indexed?
         if ( property.indexed() ) {
             this._indexed.push(key);
+        }
+
+        if (property.fullTextIndexed()) {
+            this._full_text_indexed.push(key);
         }
 
         // Should this property be hidden during JSON conversion?

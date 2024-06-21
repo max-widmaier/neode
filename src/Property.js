@@ -46,6 +46,10 @@ export default class Property {
         return this._index || false;
     }
 
+    fullTextIndexed() {
+        return this._fullText || false;
+    }
+
     protected() {
         return this._primary || this._protected;
     }

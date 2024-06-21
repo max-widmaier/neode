@@ -389,6 +389,11 @@ declare namespace Neode {
              */
             tldWhitelist: string[]
         }
+
+        /**
+         * The string is a full text searchable field
+         */
+        fullText?: boolean
     }
 
     interface BaseRelationshipNodeProperties extends BaseNodeProperties {
@@ -769,7 +774,7 @@ declare namespace Neode {
 
     class ModelMap {
         models: Map<string, Model<any>>;
-        
+
         /**
          * @constuctor
          *

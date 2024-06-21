@@ -1,5 +1,3 @@
-
-
 function UniqueConstraintCypher(label, property, mode = 'CREATE') {
     return `${mode} CONSTRAINT FOR (model:${label}) REQUIRE model.${property} IS UNIQUE`;
 }
@@ -10,6 +8,10 @@ function ExistsConstraintCypher(label, property, mode = 'CREATE') {
 
 function IndexCypher(label, property, mode = 'CREATE') {
     return `${mode} INDEX FOR :${label}(${property})`;
+}
+
+function FullTextIndexCypher(label, property, model, mode = 'CREATE') {
+    return `${mode} FULLTEXT INDEX ${label} FOR (n:${model}) ON (n.${property})`;
 }
 
 function runAsync(session, queries, resolve, reject) {
@@ -48,6 +50,11 @@ function InstallSchema(neode) {
             // Indexes
             if (property.indexed()) {
                 queries.push(IndexCypher(label, property.name()));
+            }
+
+            // Full text indexes
+            if (property.fullTextIndexed()) {
+                queries.push(FullTextIndexCypher(label, property.name(), model.name()));
             }
         });
     });
