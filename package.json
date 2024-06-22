@@ -27,7 +27,7 @@
     "@hapi/joi": "^15.1.1",
     "dotenv": "^16.4.1",
     "joi": "^17.12.0",
-    "neo4j-driver": "^5.16.0",
+    "neo4j-driver": "^5.21.0",
     "uuid": "^9.0.1"
   },
   "devDependencies": {

@@ -12,22 +12,38 @@ function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" 
 function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
 function UniqueConstraintCypher(label, property) {
   var mode = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 'CREATE';
-  return "".concat(mode, " CONSTRAINT FOR (model:").concat(label, ") REQUIRE model.").concat(property, " IS UNIQUE");
+  if (mode === 'DROP') {
+    return "DROP CONSTRAINT unique_".concat(label, "_").concat(property);
+  }
+  return "".concat(mode, " CONSTRAINT unique_").concat(label, "_").concat(property, " IF NOT EXISTS FOR (model:").concat(label, ") REQUIRE model.").concat(property, " IS UNIQUE");
 }
 function ExistsConstraintCypher(label, property) {
   var mode = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 'CREATE';
-  return "".concat(mode, " CONSTRAINT FOR (model:").concat(label, ") REQUIRE EXISTS(model.").concat(property, ")");
+  if (mode === 'DROP') {
+    return "DROP CONSTRAINT exists_".concat(label, "_").concat(property);
+  }
+  return "CREATE CONSTRAINT exists_".concat(label, "_").concat(property, " IF NOT EXISTS FOR (model:").concat(label, ") REQUIRE model.").concat(property, " IS NOT NULL");
 }
 function IndexCypher(label, property) {
   var mode = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 'CREATE';
-  return "".concat(mode, " INDEX FOR :").concat(label, "(").concat(property, ")");
+  if (mode === 'DROP') {
+    return "DROP INDEX idx_".concat(label, "_").concat(property);
+  }
+  return "CREATE INDEX idx_".concat(label, "_").concat(property, " IF NOT EXISTS FOR (n:").concat(label, ") ON (n.").concat(property, ")");
 }
 function FullTextIndexCypher(label, props, forLabel) {
   var mode = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 'CREATE';
   var options = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : {};
-  return "".concat(mode, " FULLTEXT INDEX ").concat(label, " FOR ").concat(forLabel, " ON EACH [").concat(props.map(function (p) {
+  if (mode === 'DROP') {
+    return "DROP INDEX ".concat(label);
+  }
+  var optionsString = '';
+  if (options.indexConfig) {
+    optionsString = "\nOPTIONS {\n    indexConfig: {\n        ".concat(options.indexConfig['fulltext.analyzer'] ? '`fulltext.analyzer`: \'' + options.indexConfig['fulltext.analyzer'] + '\'' + (options.indexConfig['fulltext.eventually_consistent'] ? ',' : '') : '', "\n        ").concat(options.indexConfig['fulltext.eventually_consistent'] ? '`fulltext.eventually_consistent`: ' + options.indexConfig['fulltext.eventually_consistent'] : '', "\n    }       \n}");
+  }
+  return "CREATE FULLTEXT INDEX idx_".concat(label, "_fulltext IF NOT EXISTS FOR ").concat(forLabel, " ON EACH [").concat(props.map(function (p) {
     return "n.".concat(p);
-  }).join(', '), "]").concat(options.indexConfig ? "\nOPTIONS { indexConfig: ".concat(JSON.stringify(options.indexConfig), " }") : '').concat(mode === 'CREATE' ? ' IF NOT EXISTS' : '');
+  }).join(', '), "]").concat(optionsString);
 }
 function runAsync(session, queries, resolve, reject) {
   var next = queries.pop();
@@ -64,10 +80,13 @@ function InstallSchema(neode) {
       // Full text indexes
       if (property.fullTextIndexed()) {
         var indexDef = property.fullTextIndexDefinition();
-        if (!indexDef) {
-          throw new Error("No index definition found for property ".concat(property.name(), " on model ").concat(model.name()));
+        var forLabel = '';
+        if (property.type() === 'nodeFulltext') {
+          forLabel = "(n:".concat(indexDef.models.join('|'), ")");
+        } else if (property.type() === 'relationshipFulltext') {
+          forLabel = "()-[n:".concat(indexDef.models.join('|'), "]-()");
         }
-        queries.push(FullTextIndexCypher(indexDef.label, indexDef.properties, indexDef.models, indexDef.options));
+        queries.push(FullTextIndexCypher(property.name(), indexDef.properties, forLabel, 'CREATE', indexDef.options));
       }
     });
   });
@@ -82,7 +101,7 @@ function DropSchema(neode) {
         queries.push(UniqueConstraintCypher(label, property.name(), 'DROP'));
       }
       if (neode.enterprise() && property.required()) {
-        queries.push(ExistsConstraintCypher(label, property.name(), 'DROP'));
+        // queries.push(ExistsConstraintCypher(label, property.name(), 'DROP'));
       }
 
       // Indexes
@@ -90,14 +109,7 @@ function DropSchema(neode) {
         queries.push(IndexCypher(label, property.name(), 'DROP'));
       }
       if (property.fullTextIndexed()) {
-        var indexDef = property.fullTextIndexDefinition();
-        var forLabel = '';
-        if (property.type() === 'nodeFulltext') {
-          forLabel = "(n:".concat(indexDef.models.join('|'), ")");
-        } else if (property.type() === 'relationshipFulltext') {
-          forLabel = "()-[n:".concat(indexDef.models.join('|'), "]-()");
-        }
-        queries.push(FullTextIndexCypher(label, indexDef.properties, forLabel, 'DROP', indexDef.options));
+        queries.push(FullTextIndexCypher(property.name(), 'N/A', 'N/A', 'DROP'));
       }
     });
   });

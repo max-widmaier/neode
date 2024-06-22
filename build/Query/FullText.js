@@ -40,7 +40,7 @@ var FullText = exports["default"] = /*#__PURE__*/function () {
     key: "toString",
     value: function toString() {
       var procedure = "db.index.fulltext.".concat(this._type === 'nodeFulltext' ? 'queryNodes' : 'queryRelationships');
-      return "CALL ".concat(procedure, "(").concat(this._index, ", ").concat(this.parseSearchTerm(), ") YIELD ").concat(this._alias, ", ").concat(this._scoreAlias);
+      return "CALL ".concat(procedure, "(\"idx_").concat(this._index, "_fulltext\", '").concat(this.parseSearchTerm(), "') YIELD node AS ").concat(this._alias, ", score AS ").concat(this._scoreAlias);
     }
   }, {
     key: "parseSearchTerm",
@@ -51,9 +51,11 @@ var FullText = exports["default"] = /*#__PURE__*/function () {
           // Return parameterized search term along with operator
           var paramName = "$".concat(_this._index, "_");
           if (term.key) {
-            paramName = "".concat(term.key, ":").concat(paramName);
+            paramName += term.key;
+            paramName = "".concat(term.key, ":\"").concat(paramName, "\"");
           } else {
             paramName += index.toString();
+            paramName = "\"".concat(paramName, "\"");
           }
           if (index === 0) {
             return "".concat(paramName);

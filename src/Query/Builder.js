@@ -11,6 +11,7 @@ import WhereRaw from './WhereRaw';
 import WithStatement from './WithStatement';
 import WithDistinctStatement from './WithDistinctStatement';
 import neo4j from 'neo4j-driver';
+import FullText from "./FullText";
 
 export const mode = {
     READ: "READ",
@@ -591,8 +592,18 @@ export default class Builder {
      * @param {String} alias (optional) Defaults to ${index name}
      * @param {String} scoreAlias (optional) Defaults to ${index name}_score
      */
-    fullText(index, type, searchTerms, alias, scoreAlias, operator = 'AND') {
-        this._current.fullText(index, type, searchTerms, operator, alias == null ? index : alias, scoreAlias == null ? index + '_score' : scoreAlias);
+    fullText(index, type, searchTerms, operator = 'AND', alias, scoreAlias) {
+        let fullText = new FullText(index, type, searchTerms, operator, alias, scoreAlias);
+        this._current.fullText(fullText);
+
+        // Add parameters to the params object
+        let params = fullText.params();
+
+        for (let key in fullText.params) {
+            this._params[key] = params[key];
+        }
+
+        return this;
     }
 
     /**

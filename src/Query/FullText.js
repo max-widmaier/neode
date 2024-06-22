@@ -22,7 +22,7 @@ export default class FullText {
 
     toString() {
         const procedure = `db.index.fulltext.${this._type === 'nodeFulltext' ? 'queryNodes' : 'queryRelationships'}`;
-        return `CALL ${procedure}(${this._index}, ${this.parseSearchTerm()}) YIELD ${this._alias}, ${this._scoreAlias}`;
+        return `CALL ${procedure}("idx_${this._index}_fulltext", '${this.parseSearchTerm()}') YIELD node AS ${this._alias}, score AS ${this._scoreAlias}`;
     }
 
     parseSearchTerm() {
@@ -31,9 +31,11 @@ export default class FullText {
                 // Return parameterized search term along with operator
                 let paramName = `$${this._index}_`;
                 if (term.key) {
-                    paramName = `${term.key}:${paramName}`;
+                    paramName += term.key;
+                    paramName = `${term.key}:"${paramName}"`;
                 } else {
                     paramName += index.toString();
+                    paramName = `"${paramName}"`;
                 }
 
                 if (index === 0) {

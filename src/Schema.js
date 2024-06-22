@@ -1,17 +1,40 @@
 function UniqueConstraintCypher(label, property, mode = 'CREATE') {
-    return `${mode} CONSTRAINT FOR (model:${label}) REQUIRE model.${property} IS UNIQUE`;
+    if (mode === 'DROP') {
+        return `DROP CONSTRAINT unique_${label}_${property}`;
+    }
+    return `${mode} CONSTRAINT unique_${label}_${property} IF NOT EXISTS FOR (model:${label}) REQUIRE model.${property} IS UNIQUE`;
 }
 
 function ExistsConstraintCypher(label, property, mode = 'CREATE') {
-    return `${mode} CONSTRAINT FOR (model:${label}) REQUIRE EXISTS(model.${property})`;
+    if (mode === 'DROP') {
+        return `DROP CONSTRAINT exists_${label}_${property}`;
+    }
+    return `CREATE CONSTRAINT exists_${label}_${property} IF NOT EXISTS FOR (model:${label}) REQUIRE model.${property} IS NOT NULL`;
 }
 
 function IndexCypher(label, property, mode = 'CREATE') {
-    return `${mode} INDEX FOR :${label}(${property})`;
+    if (mode === 'DROP') {
+        return `DROP INDEX idx_${label}_${property}`;
+    }
+    return `CREATE INDEX idx_${label}_${property} IF NOT EXISTS FOR (n:${label}) ON (n.${property})`;
 }
 
 function FullTextIndexCypher(label, props, forLabel, mode = 'CREATE', options = {}) {
-    return `${mode} FULLTEXT INDEX ${label} FOR ${forLabel} ON EACH [${props.map(p => `n.${p}`).join(', ')}]${options.indexConfig ? `\nOPTIONS { indexConfig: ${JSON.stringify(options.indexConfig)} }` : ''}${mode === 'CREATE' ? ' IF NOT EXISTS' : ''}`;
+    if (mode === 'DROP') {
+        return `DROP INDEX ${label}`;
+    }
+    let optionsString = '';
+
+    if (options.indexConfig) {
+        optionsString = `\nOPTIONS {
+    indexConfig: {
+        ${options.indexConfig['fulltext.analyzer'] ? '`fulltext.analyzer`: \'' + options.indexConfig['fulltext.analyzer'] + '\'' + (options.indexConfig['fulltext.eventually_consistent'] ? ',' : '') : ''}
+        ${options.indexConfig['fulltext.eventually_consistent'] ? '`fulltext.eventually_consistent`: ' + options.indexConfig['fulltext.eventually_consistent'] : ''}
+    }       
+}`;
+    }
+
+    return `CREATE FULLTEXT INDEX idx_${label}_fulltext IF NOT EXISTS FOR ${forLabel} ON EACH [${props.map(p => `n.${p}`).join(', ')}]${optionsString}`;
 }
 
 function runAsync(session, queries, resolve, reject) {
@@ -55,10 +78,14 @@ function InstallSchema(neode) {
             // Full text indexes
             if (property.fullTextIndexed()) {
                 let indexDef = property.fullTextIndexDefinition();
-                if (!indexDef) {
-                    throw new Error(`No index definition found for property ${property.name()} on model ${model.name()}`);
+                let forLabel = '';
+                if (property.type() === 'nodeFulltext') {
+                    forLabel = `(n:${indexDef.models.join('|')})`;
+                } else if (property.type() === 'relationshipFulltext') {
+                    forLabel = `()-[n:${indexDef.models.join('|')}]-()`;
                 }
-                queries.push(FullTextIndexCypher(indexDef.label, indexDef.properties, indexDef.models, indexDef.options));
+
+                queries.push(FullTextIndexCypher(property.name(), indexDef.properties, forLabel, 'CREATE', indexDef.options));
             }
         });
     });
@@ -77,7 +104,7 @@ function DropSchema(neode) {
             }
 
             if (neode.enterprise() && property.required()) {
-                queries.push(ExistsConstraintCypher(label, property.name(), 'DROP'));
+                // queries.push(ExistsConstraintCypher(label, property.name(), 'DROP'));
             }
 
             // Indexes
@@ -86,15 +113,7 @@ function DropSchema(neode) {
             }
 
             if (property.fullTextIndexed()) {
-                let indexDef = property.fullTextIndexDefinition();
-                let forLabel = '';
-                if (property.type() === 'nodeFulltext') {
-                    forLabel = `(n:${indexDef.models.join('|')})`;
-                } else if (property.type() === 'relationshipFulltext') {
-                    forLabel = `()-[n:${indexDef.models.join('|')}]-()`;
-                }
-
-                queries.push(FullTextIndexCypher(label, indexDef.properties, forLabel, 'DROP', indexDef.options));
+                queries.push(FullTextIndexCypher(property.name(), 'N/A', 'N/A', 'DROP'));
             }
         });
     });

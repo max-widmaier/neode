@@ -20,8 +20,8 @@ export default class Statement {
         this._fullText = [];
     }
 
-    fullText(index, type, searchTerms, operator = 'AND', alias = 'res', scoreAlias = 'score') {
-        this._fullText.push(new FullText(index,  type, searchTerms, operator, alias, scoreAlias));
+    fullText(fullText) {
+        this._fullText.push(fullText);
 
         return this;
     }

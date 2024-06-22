@@ -556,9 +556,7 @@ declare namespace Neode {
          */
         match<T>(alias: string, model: Model<T>): Builder;
 
-        optionalMatch<T>(alias: string, model?: Model<T>): Builder;
-
-        fullText(index: string,): Builder;
+        optionalMatch<T>(alias: string, model?: Model<T> | false): Builder;
 
         /**
          * Add a 'with' statement to the query
@@ -581,6 +579,34 @@ declare namespace Neode {
          * @return {Builder}
          */
         and(...args: Array<string>): Builder;
+
+        /**
+         * Query a full text index
+         * @param {String} index (required) Index name as defined in the schema
+         * @param {'nodeFulltext'|'relationshipFullText'} type (required) Type of FullText index (e.g. 'nodeFulltext' or 'relationshipFullText')
+         * @param {String[]|{
+         *     key?: string,
+         *     value: string,
+         *     operator?: 'AND'|'OR'|'NOT'|'+'|'-'
+         * }[]} searchTerms (required) Search terms to query or an object of properties to search on
+         *
+         * @param {'AND'|'OR'|'NOT'|'+'|'-'} operator (optional) Operator to use for the search assuming the type of search term is a string array.
+         * Defaults to 'AND'.
+         * AND: Matches all terms
+         * OR: Matches any term
+         * NOT: Matches none of the terms, must be used with more than one term.
+         * +: Requires the term to be present
+         * -: Requires the term to not be present
+         *
+         * See more at https://lucene.apache.org/core/2_9_4/queryparsersyntax.html#Boolean%20operators
+         * @param {String} alias (optional) Defaults to ${index name}
+         * @param {String} scoreAlias (optional) Defaults to ${index name}_score
+         */
+        fullText(index: string, type: 'nodeFulltext' | 'relationshipFullText', searchTerms: string[] | {
+            key?: string;
+            value: string;
+            operator?: 'AND' | 'OR' | 'NOT' | '+' | '-';
+        }[], operator: 'AND' | 'OR' | 'NOT' | '+' | '-', alias: string, scoreAlias: string): Builder;
 
         /**
          * Add a where condition to the current statement.
@@ -991,7 +1017,7 @@ declare namespace Neode {
          * Dropping the schema will remove all indexes and constraints created by Neode.
          * All other indexes and constraints will be left intact.
          */
-        drop(): void;
+        drop(): Promise<void>;
     }
 
     class RelationshipType {

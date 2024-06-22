@@ -34,11 +34,8 @@ var Statement = exports["default"] = /*#__PURE__*/function () {
   }
   _createClass(Statement, [{
     key: "fullText",
-    value: function fullText(index, type, searchTerms) {
-      var operator = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 'AND';
-      var alias = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 'res';
-      var scoreAlias = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : 'score';
-      this._fullText.push(new _FullText["default"](index, type, searchTerms, operator, alias, scoreAlias));
+    value: function fullText(_fullText) {
+      this._fullText.push(_fullText);
       return this;
     }
   }, {
