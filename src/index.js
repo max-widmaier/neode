@@ -338,8 +338,8 @@ export default class Neode {
      * @return {Transaction}
      */
     transaction(mode = neo4j.WRITE, database = this.database) {
-        const session = this.driver.session(database);
-        const tx = session.beginTransaction(mode);
+        const session = this.driver.session({database, defaultAccessMode: mode});
+        const tx = session.beginTransaction();
 
         // Create an 'end' function to commit & close the session
         // TODO: Clean up
