@@ -531,6 +531,8 @@ declare namespace Neode {
 
     class Builder {
 
+        public _params: Record<string, any>;
+
         constructor(neode: Neode);
 
         /**
