@@ -51,7 +51,7 @@ export default class Property {
     }
 
     vectorIndex() {
-        return this._vectorIndex || false;
+        return this._vectorIndex || {};
     }
 
     vectorIndexed() {

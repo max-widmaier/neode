@@ -79,7 +79,7 @@ var Property = /*#__PURE__*/function () {
   }, {
     key: "vectorIndex",
     value: function vectorIndex() {
-      return this._vectorIndex || false;
+      return this._vectorIndex || {};
     }
   }, {
     key: "vectorIndexed",

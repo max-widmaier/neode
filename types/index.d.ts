@@ -513,7 +513,7 @@ declare namespace Neode {
 
     interface VectorNodeProperties extends BaseNodeProperties {
         type: 'vector',
-        vectorIndex?: {
+        vectorIndex?: boolean | {
             name?: string, // Defaults to idx_{propertyName}_vector
             dimensions?: number, // Defaults to 1536
             similarity_function?: 'cosine' | 'euclidean',

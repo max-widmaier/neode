@@ -38,14 +38,20 @@ function FullTextIndexCypher(label, props, forLabel, mode = 'CREATE', options = 
 }
 
 function VectorIndexCypher(label, property, mode = 'CREATE', options = {}) {
-    let name = options.indexConfig.name || `idx_${label}_${property}_vector`;
+    if (options === true) {
+        options = {
+            dimensions: 1536,
+            similarity_function: 'cosine'
+        };
+    }
+    let name = options.name || `idx_${label}_${property}_vector`;
     if (mode === 'DROP') {
         return `DROP INDEX ${name}`;
     }
     return `CREATE VECTOR INDEX ${name} IF NOT EXISTS FOR (n:${label}) ON (n.${property}) 
     OPTIONS {indexConfig: {
-        \`vector.dimensions\`: ${options.indexConfig.dimensions || 1536},
-        \`vector.similarity_function\`: '${options.indexConfig.similarity_function || 'cosine'}'
+        \`vector.dimensions\`: ${options.dimensions || 1536},
+        \`vector.similarity_function\`: '${options.similarity_function || 'cosine'}'
     }
 }`;
 }
@@ -101,8 +107,8 @@ function InstallSchema(neode) {
                 queries.push(FullTextIndexCypher(property.name(), indexDef.properties, forLabel, 'CREATE', indexDef.options));
             }
 
-            if (property.vectorIndex()) {
-                queries.push(VectorIndexCypher(label, property.name()));
+            if (property.vectorIndexed()) {
+                queries.push(VectorIndexCypher(label, property.name(), 'CREATE', property.vectorIndex()));
             }
         });
     });

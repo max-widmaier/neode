@@ -63,13 +63,21 @@ function FullTextIndexCypher(label, props, forLabel) {
 function VectorIndexCypher(label, property) {
   var mode = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 'CREATE';
   var options = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : {};
-  var name = options.indexConfig.name || "idx_".concat(label, "_").concat(property, "_vector");
+
+  if (options === true) {
+    options = {
+      dimensions: 1536,
+      similarity_function: 'cosine'
+    };
+  }
+
+  var name = options.name || "idx_".concat(label, "_").concat(property, "_vector");
 
   if (mode === 'DROP') {
     return "DROP INDEX ".concat(name);
   }
 
-  return "CREATE VECTOR INDEX ".concat(name, " IF NOT EXISTS FOR (n:").concat(label, ") ON (n.").concat(property, ") \n    OPTIONS {indexConfig: {\n        `vector.dimensions`: ").concat(options.indexConfig.dimensions || 1536, ",\n        `vector.similarity_function`: '").concat(options.indexConfig.similarity_function || 'cosine', "'\n    }\n}");
+  return "CREATE VECTOR INDEX ".concat(name, " IF NOT EXISTS FOR (n:").concat(label, ") ON (n.").concat(property, ") \n    OPTIONS {indexConfig: {\n        `vector.dimensions`: ").concat(options.dimensions || 1536, ",\n        `vector.similarity_function`: '").concat(options.similarity_function || 'cosine', "'\n    }\n}");
 }
 
 function runAsync(session, queries, resolve, reject) {
@@ -120,8 +128,8 @@ function InstallSchema(neode) {
         queries.push(FullTextIndexCypher(property.name(), indexDef.properties, forLabel, 'CREATE', indexDef.options));
       }
 
-      if (property.vectorIndex()) {
-        queries.push(VectorIndexCypher(label, property.name()));
+      if (property.vectorIndexed()) {
+        queries.push(VectorIndexCypher(label, property.name(), 'CREATE', property.vectorIndex()));
       }
     });
   });
