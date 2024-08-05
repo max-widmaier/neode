@@ -556,7 +556,7 @@ declare namespace Neode {
          * @param  {Model}  model      Model definition
          * @return {Builder}           Builder
          */
-        match<T>(alias: string, model: Model<T>): Builder;
+        match<T>(alias: string, model: Model<T> | false): Builder;
 
         optionalMatch<T>(alias: string, model?: Model<T> | false): Builder;
 
