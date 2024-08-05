@@ -621,6 +621,17 @@ declare namespace Neode {
         }[], operator: 'AND' | 'OR' | 'NOT' | '+' | '-', alias: string, scoreAlias: string): Builder;
 
         /**
+         * Query a vector index to retrieve nodes similar to a given query as determined by the query parameter
+         * @param model {Neode.Model} Model to query
+         * @param property {String} Vector property that has been indexed
+         * @param nearestNeighbors {Number} Number of nearest neighbors to return
+         * @param query {String | Array<Number>} Query, either as a property of a previous node (that is a vector) or a number array
+         * @param [nodeAlias] {String} Alias of the node to return (Defaults to ${property}_node)
+         * @param [scoreAlias] {String} Alias of the score to return (Defaults to ${property}_score)
+         */
+        vector(model: Model<any>, property: string, nearestNeighbors: number, query: string | Array<number>, nodeAlias?: string, scoreAlias?: string): Builder;
+
+        /**
          * Add a where condition to the current statement.
          *
          * @param  {...mixed} args Argumenta
