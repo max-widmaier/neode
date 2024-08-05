@@ -37,6 +37,19 @@ function FullTextIndexCypher(label, props, forLabel, mode = 'CREATE', options = 
     return `CREATE FULLTEXT INDEX idx_${label}_fulltext IF NOT EXISTS FOR ${forLabel} ON EACH [${props.map(p => `n.${p}`).join(', ')}]${optionsString}`;
 }
 
+function VectorIndexCypher(label, property, mode = 'CREATE', options = {}) {
+    let name = options.indexConfig.name || `idx_${label}_${property}_vector`;
+    if (mode === 'DROP') {
+        return `DROP INDEX ${name}`;
+    }
+    return `CREATE VECTOR INDEX ${name} IF NOT EXISTS FOR (n:${label}) ON (n.${property}) 
+    OPTIONS {indexConfig: {
+        \`vector.dimensions\`: ${options.indexConfig.dimensions || 1536},
+        \`vector.similarity_function\`: '${options.indexConfig.similarity_function || 'cosine'}'
+    }
+}`;
+}
+
 function runAsync(session, queries, resolve, reject) {
     const next = queries.pop();
 
@@ -86,6 +99,10 @@ function InstallSchema(neode) {
                 }
 
                 queries.push(FullTextIndexCypher(property.name(), indexDef.properties, forLabel, 'CREATE', indexDef.options));
+            }
+
+            if (property.vectorIndex()) {
+                queries.push(VectorIndexCypher(label, property.name()));
             }
         });
     });

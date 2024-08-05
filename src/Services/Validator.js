@@ -28,6 +28,13 @@ const ignore = [
     'index',
     'unique',
     'cascade',
+    // For full text indexes
+    'models',
+    'options',
+
+    // For vectors
+    'vectorIndex',
+    'dtype'
 ];
 const booleans = [
     'optional',
@@ -271,6 +278,10 @@ function BuildValidationSchema(schema) {
 
             case 'float':
                 validation = Joi.number();
+                break;
+
+            case 'vector':
+                validation = Joi.array().items(Joi.number());
                 break;
 
             default:

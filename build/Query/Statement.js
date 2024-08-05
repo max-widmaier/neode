@@ -38,12 +38,20 @@ var Statement = /*#__PURE__*/function () {
     this._on_match_set = [];
     this._remove = [];
     this._fullText = [];
+    this._vector = [];
   }
 
   _createClass(Statement, [{
     key: "fullText",
     value: function fullText(_fullText) {
       this._fullText.push(_fullText);
+
+      return this;
+    }
+  }, {
+    key: "vector",
+    value: function vector(_vector) {
+      this._vector.push(_vector);
 
       return this;
     }
@@ -196,6 +204,12 @@ var Statement = /*#__PURE__*/function () {
         output.push(this._where.map(function (statement) {
           return statement.toString();
         }).join(''));
+      }
+
+      if (this._vector.length) {
+        output.push(this._vector.map(function (statement) {
+          return statement.toString();
+        }).join('\n'));
       }
 
       if (this._remove.length) {

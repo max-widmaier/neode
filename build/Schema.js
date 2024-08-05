@@ -60,6 +60,18 @@ function FullTextIndexCypher(label, props, forLabel) {
   }).join(', '), "]").concat(optionsString);
 }
 
+function VectorIndexCypher(label, property) {
+  var mode = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 'CREATE';
+  var options = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : {};
+  var name = options.indexConfig.name || "idx_".concat(label, "_").concat(property, "_vector");
+
+  if (mode === 'DROP') {
+    return "DROP INDEX ".concat(name);
+  }
+
+  return "CREATE VECTOR INDEX ".concat(name, " IF NOT EXISTS FOR (n:").concat(label, ") ON (n.").concat(property, ") \n    OPTIONS {indexConfig: {\n        `vector.dimensions`: ").concat(options.indexConfig.dimensions || 1536, ",\n        `vector.similarity_function`: '").concat(options.indexConfig.similarity_function || 'cosine', "'\n    }\n}");
+}
+
 function runAsync(session, queries, resolve, reject) {
   var next = queries.pop();
   return session.run(next).then(function () {
@@ -106,6 +118,10 @@ function InstallSchema(neode) {
         }
 
         queries.push(FullTextIndexCypher(property.name(), indexDef.properties, forLabel, 'CREATE', indexDef.options));
+      }
+
+      if (property.vectorIndex()) {
+        queries.push(VectorIndexCypher(label, property.name()));
       }
     });
   });

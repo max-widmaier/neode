@@ -76,6 +76,16 @@ var Property = /*#__PURE__*/function () {
     value: function fullTextIndexed() {
       return this.type() === 'nodeFulltext' || this.type() === 'relationshipFulltext';
     }
+  }, {
+    key: "vectorIndex",
+    value: function vectorIndex() {
+      return this._vectorIndex || false;
+    }
+  }, {
+    key: "vectorIndexed",
+    value: function vectorIndexed() {
+      return this.type() === 'vector' && this.vectorIndex() != null;
+    }
     /**
      * Gets the full text index definition for this property.
      * If the type is nodeFulltext, the models field will be populated with the labels of the nodes that this property is indexed on.

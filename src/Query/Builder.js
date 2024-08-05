@@ -12,6 +12,7 @@ import WithStatement from './WithStatement';
 import WithDistinctStatement from './WithDistinctStatement';
 import neo4j from 'neo4j-driver';
 import FullText from "./FullText";
+import Vector from "./Vector";
 
 export const mode = {
     READ: "READ",
@@ -600,6 +601,35 @@ export default class Builder {
         let params = fullText.params();
 
         for (let key in fullText.params) {
+            this._params[key] = params[key];
+        }
+
+        return this;
+    }
+
+    /**
+     * Add a vector index call to the query
+     * @param model {Neode.Model} Model to query
+     * @param property {String} Vector property that has been indexed
+     * @param nearestNeighbors {Number} Number of nearest neighbors to return
+     * @param query {String | Array<Number>} Query, either as a property of a previous node (that is a vector) or a number array
+     * @param [nodeAlias] {String} Alias of the node to return (Defaults to ${property}_node)
+     * @param [scoreAlias] {String} Alias of the score to return (Defaults to ${property}_score)
+     */
+    vector(model, property, nearestNeighbors, query, nodeAlias, scoreAlias) {
+        let _nodeAlias = nodeAlias || `${property}_node`;
+        let _scoreAlias = scoreAlias || `${property}_score`;
+
+        if (model.schema()[property].vectorIndex == null) {
+            throw new Error(`Property ${property} is not a vector index`);
+        }
+
+        let vector = new Vector(model, property, nearestNeighbors, query, _nodeAlias, _scoreAlias);
+        this._current.vector(vector);
+
+        // Add parameters to the params object
+        let params = vector.params();
+        for (let key in vector.params) {
             this._params[key] = params[key];
         }
 

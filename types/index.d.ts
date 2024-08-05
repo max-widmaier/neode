@@ -511,12 +511,22 @@ declare namespace Neode {
         relations: string[],
     }
 
+    interface VectorNodeProperties extends BaseNodeProperties {
+        type: 'vector',
+        vectorIndex?: {
+            name?: string, // Defaults to idx_{propertyName}_vector
+            dimensions?: number, // Defaults to 1536
+            similarity_function?: 'cosine' | 'euclidean',
+        },
+        dtype: 'float' | 'int', // Defaults to float
+    }
+
     type NodeProperty = PropertyTypes
         | NumberNodeProperties | IntNodeProperties | IntegerNodeProperties | FloatNodeProperties
         | RelationshipNodeProperties | RelationshipsNodeProperties
         | NodeNodeProperties | NodesNodeProperties
         | StringNodeProperties | OtherNodeProperties |
-        NodeFullTextIndexProperties | RelationshipFullTextIndexProperties;
+        NodeFullTextIndexProperties | RelationshipFullTextIndexProperties | VectorNodeProperties;
 
     export type SchemaObject = {
         [index: string]: NodeProperty

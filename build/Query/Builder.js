@@ -31,6 +31,8 @@ var _neo4jDriver = _interopRequireDefault(require("neo4j-driver"));
 
 var _FullText = _interopRequireDefault(require("./FullText"));
 
+var _Vector = _interopRequireDefault(require("./Vector"));
+
 function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return null; var cache = new WeakMap(); _getRequireWildcardCache = function _getRequireWildcardCache() { return cache; }; return cache; }
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } if (obj === null || _typeof(obj) !== "object" && typeof obj !== "function") { return { "default": obj }; } var cache = _getRequireWildcardCache(); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj["default"] = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
@@ -765,6 +767,40 @@ var Builder = /*#__PURE__*/function () {
       var params = fullText.params();
 
       for (var key in fullText.params) {
+        this._params[key] = params[key];
+      }
+
+      return this;
+    }
+    /**
+     * Add a vector index call to the query
+     * @param model {Neode.Model} Model to query
+     * @param property {String} Vector property that has been indexed
+     * @param nearestNeighbors {Number} Number of nearest neighbors to return
+     * @param query {String | Array<Number>} Query, either as a property of a previous node (that is a vector) or a number array
+     * @param [nodeAlias] {String} Alias of the node to return (Defaults to ${property}_node)
+     * @param [scoreAlias] {String} Alias of the score to return (Defaults to ${property}_score)
+     */
+
+  }, {
+    key: "vector",
+    value: function vector(model, property, nearestNeighbors, query, nodeAlias, scoreAlias) {
+      var _nodeAlias = nodeAlias || "".concat(property, "_node");
+
+      var _scoreAlias = scoreAlias || "".concat(property, "_score");
+
+      if (model.schema()[property].vectorIndex == null) {
+        throw new Error("Property ".concat(property, " is not a vector index"));
+      }
+
+      var vector = new _Vector["default"](model, property, nearestNeighbors, query, _nodeAlias, _scoreAlias);
+
+      this._current.vector(vector); // Add parameters to the params object
+
+
+      var params = vector.params();
+
+      for (var key in vector.params) {
         this._params[key] = params[key];
       }
 

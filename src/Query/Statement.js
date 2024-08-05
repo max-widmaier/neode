@@ -18,10 +18,17 @@ export default class Statement {
         this._on_match_set = [];
         this._remove = [];
         this._fullText = [];
+        this._vector = [];
     }
 
     fullText(fullText) {
         this._fullText.push(fullText);
+
+        return this;
+    }
+
+    vector(vector) {
+        this._vector.push(vector);
 
         return this;
     }
@@ -142,6 +149,12 @@ export default class Statement {
             output.push(this._where.map(statement => {
                 return statement.toString();
             }).join(''));
+        }
+
+        if (this._vector.length) {
+            output.push(this._vector.map(statement => {
+                return statement.toString();
+            }).join('\n'));
         }
 
         if ( this._remove.length ) {

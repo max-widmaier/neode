@@ -32,7 +32,9 @@ var joi_options = {
   abortEarly: false
 }; // TODO: Move these to constants and validate the model schemas a bit better
 
-var ignore = ['labels', 'type', 'default', 'alias', 'properties', 'primary', 'relationship', 'target', 'direction', 'eager', 'hidden', 'readonly', 'index', 'unique', 'cascade'];
+var ignore = ['labels', 'type', 'default', 'alias', 'properties', 'primary', 'relationship', 'target', 'direction', 'eager', 'hidden', 'readonly', 'index', 'unique', 'cascade', // For full text indexes
+'models', 'options', // For vectors
+'vectorIndex', 'dtype'];
 var booleans = ['optional', 'forbidden', 'strip', 'positive', 'negative', 'port', 'integer', 'iso', 'isoDate', 'insensitive', 'required', 'truncate', 'creditCard', 'alphanum', 'token', 'hex', 'hostname', 'lowercase', 'uppercase'];
 var booleanOrOptions = ['email', 'ip', 'uri', 'base64', 'normalize', 'hex'];
 
@@ -232,6 +234,10 @@ function BuildValidationSchema(schema) {
 
       case 'float':
         validation = _joi["default"].number();
+        break;
+
+      case 'vector':
+        validation = _joi["default"].array().items(_joi["default"].number());
         break;
 
       default:
