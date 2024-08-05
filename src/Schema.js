@@ -138,6 +138,10 @@ function DropSchema(neode) {
             if (property.fullTextIndexed()) {
                 queries.push(FullTextIndexCypher(property.name(), 'N/A', 'N/A', 'DROP'));
             }
+
+            if (property.vectorIndexed()) {
+                queries.push(VectorIndexCypher(label, property.name(), 'DROP', property.vectorIndex()));
+            }
         });
     });
 
