@@ -4,7 +4,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports["default"] = Validator;
-var _joi = _interopRequireDefault(require("@hapi/joi"));
+var _joi = _interopRequireDefault(require("joi"));
 var _Model = _interopRequireDefault(require("../Model"));
 var _Node = _interopRequireDefault(require("../Node"));
 var _RelationshipType = _interopRequireWildcard(require("../RelationshipType"));
