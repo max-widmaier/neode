@@ -37,7 +37,7 @@
     "chai": "^3.5.0",
     "eslint": "^8.56.0",
     "mocha": "^10.2.0",
-    "nyc": "^14.1.1"
+    "nyc": "^17.1.0"
   },
   "bugs": {
     "url": "https://github.com/adam-cowley/neode/issues"
